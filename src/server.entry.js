@@ -1,10 +1,15 @@
 
 import ReactDOMServer from 'react-dom/server';
 import App from './app'
+import {StaticRouter} from 'react-router-dom'
 
-export const html = () => {
+export const html = (url, context) => {
 
-	const content = ReactDOMServer.renderToString(<App/>);
+	const content = ReactDOMServer.renderToString(
+		<StaticRouter location={url} context={context}>
+			<App/>
+		</StaticRouter>
+	);
 
 	return `
 		<!DOCTYPE html>

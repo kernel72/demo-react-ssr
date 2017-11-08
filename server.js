@@ -15,7 +15,7 @@ app.get('/api/data/:id', (req, res) => {
 });
 
 app.use('*', (req, res) => {
-	res.send(html());
+	res.send(html(req.originalUrl, {}));
 });
 
 app.listen('3000', () => {
