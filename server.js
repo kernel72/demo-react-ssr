@@ -2,6 +2,8 @@ const express = require('express');
 
 const app = express();
 
+const {html} = require('./dist/server.bundle');
+
 app.use(express.static('./dist'));
 
 app.get('/favicon.ico', (req, res) =>  {
@@ -13,20 +15,7 @@ app.get('/api/data/:id', (req, res) => {
 });
 
 app.use('*', (req, res) => {
-	res.send(
-		`
-			<DOCTYPE html>
-			<html>
-				<head>
-					<title>Hello World</title>
-				</head>
-				<body>
-					<div id="react-app"></div>
-					<script src="/bundle.js"></script>
-				</body>
-			</html>
-		`
-	)
+	res.send(html());
 });
 
 app.listen('3000', () => {

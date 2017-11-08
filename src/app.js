@@ -1,30 +1,39 @@
 
-import ReactDOM from 'react-dom'
-import {BrowserRouter, Route, Link} from 'react-router-dom'
+// import {BrowserRouter, Route, Link} from 'react-router-dom'
 import request from 'superagent'
+import {Helmet} from 'react-helmet'
 
-class App extends React.Component {
+export default class App extends React.Component {
 	render(){
-		return (
-			<BrowserRouter>
-				<div>
-					<ul>
-						<li><Link to="/">Home</Link></li>
-						<li><Link to="/page/data1">Page with data1</Link></li>
-						<li><Link to="/page/data2">Page with data2</Link></li>
-					</ul>
+		// return (
+		// 	<BrowserRouter>
+		// 		<div>
+		// 			<ul>
+		// 				<li><Link to="/">Home</Link></li>
+		// 				<li><Link to="/page/data1">Page with data1</Link></li>
+		// 				<li><Link to="/page/data2">Page with data2</Link></li>
+		// 			</ul>
+		//
+		// 			<hr/>
+		// 			<Route exact path="/" component={HomePage}/>
+		// 			<Route path="/page/:id" component={PageWithData}/>
+		// 		</div>
+		// 	</BrowserRouter>
+		// )
 
-					<hr/>
-					<Route exact path="/" component={HomePage}/>
-					<Route path="/page/:id" component={PageWithData}/>
-				</div>
-			</BrowserRouter>
+		return (
+			<HomePage/>
 		)
 	}
 }
 
 const HomePage = () => (
-	<div>Home Page</div>
+	<div>
+		<Helmet>
+			<title>Hello from home page</title>
+		</Helmet>
+		Home Page
+	</div>
 );
 
 class PageWithData extends React.Component{
@@ -64,8 +73,5 @@ class PageWithData extends React.Component{
 	}
 }
 
-ReactDOM.render(
-	<App/>,
-	document.getElementById('react-app')
-);
+
 
