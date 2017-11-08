@@ -2,6 +2,7 @@
 import ReactDOM from 'react-dom'
 import {BrowserRouter, Route, Link} from 'react-router-dom'
 import request from 'superagent'
+import {Helmet} from 'react-helmet'
 
 class App extends React.Component {
 	render(){
@@ -24,7 +25,12 @@ class App extends React.Component {
 }
 
 const HomePage = () => (
-	<div>Home Page</div>
+	<div>
+		<Helmet>
+			<title>Home Page</title>
+		</Helmet>
+		Home Page
+	</div>
 );
 
 class PageWithData extends React.Component{
@@ -58,8 +64,14 @@ class PageWithData extends React.Component{
 
 	render(){
 		const {loadingData, data} = this.state;
+		const {match: {params: {id}}} = this.props;
 		return(
-			loadingData ? "Loading..." : `Data Loaded: ${data}`
+			<div>
+				<Helmet>
+					<title>{id} Page</title>
+				</Helmet>
+				{loadingData ? "Loading..." : `Data Loaded: ${data}`}
+			</div>
 		)
 	}
 }
