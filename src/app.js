@@ -4,25 +4,22 @@ import {BrowserRouter, Route, Link} from 'react-router-dom'
 import request from 'axios'
 import {Helmet} from 'react-helmet'
 
-class App extends React.Component {
-	render(){
-		return (
-			<BrowserRouter>
-				<div>
-					<ul>
-						<li><Link to="/">Home</Link></li>
-						<li><Link to="/page/data1">Page with data1</Link></li>
-						<li><Link to="/page/data2">Page with data2</Link></li>
-					</ul>
+const App = () => (
+	<BrowserRouter>
+		<div>
+			<ul>
+				<li><Link to="/">Home</Link></li>
+				<li><Link to="/page/data1">Page with data1</Link></li>
+				<li><Link to="/page/data2">Page with data2</Link></li>
+			</ul>
 
-					<hr/>
-					<Route exact path="/" component={HomePage}/>
-					<Route path="/page/:id" component={PageWithData}/>
-				</div>
-			</BrowserRouter>
-		)
-	}
-}
+			<hr/>
+			<Route exact path="/" component={HomePage}/>
+			<Route path="/page/:id" component={PageWithData}/>
+		</div>
+	</BrowserRouter>
+);
+
 
 const HomePage = () => (
 	<div>
@@ -47,7 +44,7 @@ class PageWithData extends React.Component{
 			loadingData: true
 		});
 		const {match} = props;
-		request(`/api/data/${match.params.id}`)
+		request.get(`/api/data/${match.params.id}`)
 			.then(resp => this.setState({
 				loadingData: false,
 				data: resp.data
