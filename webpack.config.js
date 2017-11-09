@@ -20,6 +20,7 @@ const plugins = [
 
 module.exports = [{
 	name: "browser",
+	target: "web",
 	entry: "./src/client.entry.js",
 	output: {
 		path: distDir,
@@ -31,6 +32,7 @@ module.exports = [{
 	plugins
 }, {
 	name: "server",
+	target: "node",
 	entry: "./src/server.entry.js",
 	output: {
 		path: distDir,
