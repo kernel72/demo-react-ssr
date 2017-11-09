@@ -71,6 +71,9 @@ class LoadRoute extends React.Component {
 	componentDidMount() {
 		const {isFirstLoad, onFirstLoad} = this.props;
 		isFirstLoad && onFirstLoad();
+		if(!isFirstLoad){
+			this.loadPageData();
+		}
 	}
 
 	componentDidUpdate(prevProps){
@@ -94,7 +97,7 @@ class LoadRoute extends React.Component {
 		if(route.loadData){
 			route.loadData(match.params).then(response => {
 				this.setState({
-					isPageDataLoaded: true,
+					isDataLoaded: true,
 					pageData: response.data || {}
 				});
 			});
