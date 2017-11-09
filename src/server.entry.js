@@ -4,8 +4,10 @@ import App from './app'
 import {StaticRouter, matchPath} from 'react-router-dom'
 import routes from './routes'
 import {Helmet} from 'react-helmet'
+import { flushChunkNames } from 'react-universal-component/server'
+import flushChunks from 'webpack-flush-chunks'
 
-export const serverRenderMiddleware = (req, res) => {
+export const serverRenderMiddleware = (webpackStats) => (req, res) => {
 
 	const url = req.originalUrl;
 	const context = {};
@@ -37,11 +39,16 @@ export const serverRenderMiddleware = (req, res) => {
 
 		const helmet = Helmet.renderStatic();
 
+		const {
+			js,
+			cssHash
+		} = flushChunks(webpackStats, { chunkNames: flushChunkNames() });
 
 		res.send(`
 			<!DOCTYPE html>
 			<html ${helmet.htmlAttributes.toString()}>
 		        <head>
+		        	<base href="/">
 		            ${helmet.title.toString()}
 		            ${helmet.meta.toString()}
 		            ${helmet.link.toString()}
@@ -51,7 +58,8 @@ export const serverRenderMiddleware = (req, res) => {
 					<script>
 						window.__PRELOADED_DATA__ = ${JSON.stringify(loadedData)}
 					</script>
-					<script src="/bundle.js"></script>
+					${cssHash}
+                	${js}
 				</body>
 			</html>
 		`);

@@ -2,7 +2,8 @@ const express = require('express');
 
 const app = express();
 
-const {serverRenderMiddleware} = require('./dist/server.bundle');
+const { serverRenderMiddleware } = require('./dist/server.bundle');
+const webpackStats = require('./webpack.stats.json');
 
 app.use(express.static('./dist'));
 
@@ -15,7 +16,7 @@ app.get('/api/data/:id', (req, res) => {
 });
 
 app.use('*',
-	serverRenderMiddleware
+	serverRenderMiddleware(webpackStats.children[0])
 );
 
 app.listen('3000', () => {

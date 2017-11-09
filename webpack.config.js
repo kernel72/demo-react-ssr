@@ -8,7 +8,11 @@ const rules = [{
 	exclude: /node_modules/,
 	loader: 'babel-loader',
 	options: {
-		presets: ['react', 'env']
+		presets: ['react', 'env'],
+		plugins: [
+			"universal-import",
+			"syntax-dynamic-import"
+		]
 	}
 }];
 
@@ -33,6 +37,11 @@ module.exports = [{
 		...plugins,
 		new webpack.DefinePlugin({
 			API_URL: "'/api'"
+		}),
+		new webpack.optimize.CommonsChunkPlugin({
+			names: ['bootstrap'], // needed to put webpack bootstrap code before chunks
+			filename: '[name].[chunkhash].js',
+			minChunks: Infinity
 		})
 	]
 }, {
@@ -51,6 +60,9 @@ module.exports = [{
 		...plugins,
 		new webpack.DefinePlugin({
 			API_URL: "'http://localhost:3000/api'"
+		}),
+		new webpack.optimize.LimitChunkCountPlugin({
+			maxChunks: 1,
 		})
 	]
 }];

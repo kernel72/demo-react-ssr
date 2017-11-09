@@ -1,5 +1,6 @@
 
 import {Switch, Route, Link} from 'react-router-dom'
+import universal from 'react-universal-component'
 import routes from './routes'
 
 export default class App extends React.Component {
@@ -56,6 +57,11 @@ export default class App extends React.Component {
 	}
 }
 
+const LoadComponent = universal(props => props.loadComponent(), {
+	loading: () => (<Loading isInProgress={true}/>),
+	error: () => (<div>Something went wrong.</div>)
+});
+
 class LoadRoute extends React.Component {
 	constructor(props) {
 		super(props);
@@ -71,6 +77,10 @@ class LoadRoute extends React.Component {
 	componentDidMount() {
 		const {isFirstLoad, onFirstLoad} = this.props;
 		isFirstLoad && onFirstLoad();
+
+		if(!isFirstLoad){
+			this.loadPageData();
+		}
 	}
 
 	componentDidUpdate(prevProps){
@@ -94,7 +104,7 @@ class LoadRoute extends React.Component {
 		if(route.loadData){
 			route.loadData(match.params).then(response => {
 				this.setState({
-					isPageDataLoaded: true,
+					isDataLoaded: true,
 					pageData: response.data || {}
 				});
 			});
@@ -107,19 +117,19 @@ class LoadRoute extends React.Component {
 		const {isDataLoaded, pageData} = this.state;
 		const {route, match} = this.props;
 
-		const Component = route.component;
-
 		return (
-			<Loading isInProgress={!isDataLoaded}>
-				<Component pageData={pageData} match={match}/>
-			</Loading>
+			<LoadComponent loadComponent={route.loadComponent}
+			               isLoading={!isDataLoaded}
+			               pageData={pageData}
+			               match={match}/>
+
 		)
 	}
 
 }
 
-const Loading = ({isLoading, children}) => {
-	return isLoading ?  <div>Loading...</div> : children;
+const Loading = ({isInProgress, children}) => {
+	return isInProgress ?  <div>Loading...</div> : children;
 };
 
 
