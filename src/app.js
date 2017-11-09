@@ -1,10 +1,27 @@
 
 import {Switch, Route, Link} from 'react-router-dom'
-// import request from 'superagent'
-import {Helmet} from 'react-helmet'
+import routes from './routes'
 
 export default class App extends React.Component {
+
+	constructor(props){
+		super(props);
+
+		this.state = {
+			isFirstLoad: true
+		}
+	}
+
+	onFirstLoad(){
+		this.setState({
+			isFirstLoad: false
+		});
+	}
+
 	render(){
+		const {isFirstLoad} = this.state;
+		const {preLoadedData} = this.props;
+
 		return (
 			<div>
 				<ul>
@@ -14,75 +31,100 @@ export default class App extends React.Component {
 				</ul>
 
 				<hr/>
+
 				<Switch>
-					<Route exact path="/" component={HomePage}/>
-					<Route path="/page/:id" component={PageWithData}/>
+					{
+						routes.map(route => {
+							const {exact, path} = route;
+
+							return (
+								<Route key={path} exact={exact} path={path} render={
+									props => (
+										<LoadRoute preLoadedData={isFirstLoad && preLoadedData}
+										          onFirstLoad={this.onFirstLoad.bind(this)}
+										          isFirstLoad={isFirstLoad}
+										           route={route}
+										           {...props}/>
+									)
+								}/>
+							)
+						})
+					}
 				</Switch>
 			</div>
 		)
 	}
 }
 
-const HomePage = () => (
-	<div>
-		<Helmet>
-			<title>Hello from home page</title>
-		</Helmet>
-		Home Page
-	</div>
-);
-
-class PageWithData extends React.Component{
-	constructor(props){
+class LoadRoute extends React.Component {
+	constructor(props) {
 		super(props);
+
+		const {isFirstLoad, preLoadedData} = props;
+
 		this.state = {
-			loadingData: false,
-			data: null
+			isDataLoaded: isFirstLoad || false,
+			pageData: isFirstLoad ? (preLoadedData || {}) : {}
+		};
+	}
+
+	componentDidMount() {
+		const {isFirstLoad, onFirstLoad} = this.props;
+		isFirstLoad && onFirstLoad();
+	}
+
+	componentDidUpdate(prevProps){
+		const {location: {pathname: currentUrl}} = this.props;
+		const {location: {pathname: prevUrl}} = prevProps;
+
+		if(currentUrl !== prevUrl){
+			this.loadPageData();
 		}
 	}
 
-	// loadData(props){
-	// 	this.setState({
-	// 		loadingData: true
-	// 	});
-	// 	const {match} = props;
-	// 	request(`/api/data/${match.params.id}`)
-	// 		.then(resp => this.setState({
-	// 			loadingData: false,
-	// 			data: resp.body
-	// 		}));
-	// }
-	//
-	// componentDidMount(){
-	// 	this.loadData(this.props)
-	// }
-	//
-	// componentWillReceiveProps(props){
-	// 	this.loadData(props);
-	// }
+	loadPageData(){
+
+		const {match, route} = this.props;
+
+		this.setState({
+			pageData: {},
+			isDataLoaded: !route.loadData
+		});
+
+		if(route.loadData){
+			route.loadData(match.params).then(response => {
+				this.setState({
+					isPageDataLoaded: true,
+					pageData: response.data || {}
+				});
+			});
+		}
+	}
+
 
 	render(){
-		// const {loadingData, data} = this.state;
-		const {match: {params: {id}}} = this.props;
-		return (
-			<div>
-				<Helmet>
-					<title>{id} Page</title>
-				</Helmet>
-				Data Loaded: {id}
-			</div>
-		)
 
-		// return(
-		// 	<div>
-		// 		<Helmet>
-		// 			<title>{id} Page</title>
-		// 		</Helmet>
-		// 		{loadingData ? "Loading..." : `Data Loaded: ${data}`}
-		// 	</div>
-		// )
+		const {isDataLoaded, pageData} = this.state;
+		const {route, match} = this.props;
+
+		const Component = route.component;
+
+		return (
+			<Loading isInProgress={!isDataLoaded}>
+				<Component pageData={pageData} match={match}/>
+			</Loading>
+		)
 	}
+
 }
+
+const Loading = ({isLoading, children}) => {
+	return isLoading ?  <div>Loading...</div> : children;
+};
+
+
+
+
 
 
 

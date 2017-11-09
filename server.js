@@ -2,7 +2,7 @@ const express = require('express');
 
 const app = express();
 
-const {html} = require('./dist/server.bundle');
+const {serverRenderMiddleware} = require('./dist/server.bundle');
 
 app.use(express.static('./dist'));
 
@@ -14,9 +14,9 @@ app.get('/api/data/:id', (req, res) => {
 	res.json(`Data for ${req.params.id}`);
 });
 
-app.use('*', (req, res) => {
-	res.send(html(req.originalUrl, {}));
-});
+app.use('*',
+	serverRenderMiddleware
+);
 
 app.listen('3000', () => {
 	console.log('Listening on 3000');

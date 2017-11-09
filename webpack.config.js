@@ -19,6 +19,7 @@ const plugins = [
 ];
 
 module.exports = [{
+	target:"web",
 	name: "browser",
 	entry: "./src/client.entry.js",
 	output: {
@@ -28,9 +29,15 @@ module.exports = [{
 	module: {
 		rules
 	},
-	plugins
+	plugins: [
+		...plugins,
+		new webpack.DefinePlugin({
+			API_URL: "'/api'"
+		})
+	]
 }, {
 	name: "server",
+	target:"node",
 	entry: "./src/server.entry.js",
 	output: {
 		path: distDir,
@@ -40,5 +47,10 @@ module.exports = [{
 	module: {
 		rules
 	},
-	plugins
+	plugins: [
+		...plugins,
+		new webpack.DefinePlugin({
+			API_URL: "'http://localhost:3000/api'"
+		})
+	]
 }];

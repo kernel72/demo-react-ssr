@@ -12,17 +12,18 @@
   "author": "kernel72",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.17.0",
     "express": "^4.16.2",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-helmet": "^5.2.0",
     "react-router-dom": "^4.2.2",
-    "superagent": "^3.8.0",
     "webpack": "^3.8.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1"
   }
