@@ -1,7 +1,7 @@
 
 import ReactDOM from 'react-dom'
 import {BrowserRouter, Route, Link} from 'react-router-dom'
-import request from 'superagent'
+import request from 'axios'
 import {Helmet} from 'react-helmet'
 
 class App extends React.Component {
@@ -50,7 +50,7 @@ class PageWithData extends React.Component{
 		request(`/api/data/${match.params.id}`)
 			.then(resp => this.setState({
 				loadingData: false,
-				data: resp.body
+				data: resp.data
 			}));
 	}
 
