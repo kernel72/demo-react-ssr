@@ -3,6 +3,7 @@ import ReactDOMServer from 'react-dom/server';
 import App from './app'
 import {StaticRouter, matchPath} from 'react-router-dom'
 import routes from './routes'
+import {Helmet} from 'react-helmet'
 
 export const serverRenderMiddleware = (req, res) => {
 
@@ -34,13 +35,18 @@ export const serverRenderMiddleware = (req, res) => {
 			</StaticRouter>
 		);
 
+		const helmet = Helmet.renderStatic();
+
+
 		res.send(`
 			<!DOCTYPE html>
-			<html>
-				<head>
-					<title>Hello World</title>
-				</head>
-				<body>
+			<html ${helmet.htmlAttributes.toString()}>
+		        <head>
+		            ${helmet.title.toString()}
+		            ${helmet.meta.toString()}
+		            ${helmet.link.toString()}
+		        </head>
+				<body ${helmet.bodyAttributes.toString()}>
 					<div id="react-app">${content}</div>
 					<script>
 						window.__PRELOADED_DATA__ = ${JSON.stringify(loadedData)}
@@ -49,6 +55,5 @@ export const serverRenderMiddleware = (req, res) => {
 				</body>
 			</html>
 		`);
-
 	});
 };
