@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom'
 import App from './app'
 
-ReactDOM.render(
+ReactDOM.hydrate(
 	<App/>,
 	document.getElementById('react-app')
 );
